@@ -26,10 +26,17 @@ public class NoteController {
 		return noteDao.get(id);
 	}
 
-	@RequestMapping(value = { "/create", "/update" }, method = { RequestMethod.POST, RequestMethod.PUT })
+	@RequestMapping(value = "", method = RequestMethod.POST)
 	@ResponseBody
 	public Note saveNote(@RequestBody Note note) {
 		System.out.println("save: " + note);
+		return noteDao.save(note);
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	@ResponseBody
+	public Note updateNote(@PathVariable("id") String id, @RequestBody Note note) {
+		System.out.println("update: " + note);
 		return noteDao.save(note);
 	}
 

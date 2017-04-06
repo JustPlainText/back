@@ -17,8 +17,12 @@ public class NoteDao {
 			note = new Note(title, id, "0");
 			notes.put(id, note);
 		}
-		int count = Integer.parseInt(note.getText());
-		note.setText("" + ++count);
+		try {
+			int count = Integer.parseInt(note.getText());
+			note.setText("" + ++count);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return note;
 	}
 
