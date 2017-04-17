@@ -10,5 +10,6 @@ public class Note {
 	private String id;
 	private String title;
 	private String text;
+  private boolean encrypted;
 
 }

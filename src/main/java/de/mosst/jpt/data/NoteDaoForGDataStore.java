@@ -12,6 +12,7 @@ public class NoteDaoForGDataStore implements NoteDao {
 	private static final String TEXT = "text";
 	private static final String TITLE = "title";
 	private static final String ID = "id";
+	private static final String ENCRYPTED = "encrypted";
 
 	@Override
 	public Note get(String id) throws NoteNotFoundException {
@@ -40,11 +41,12 @@ public class NoteDaoForGDataStore implements NoteDao {
 	}
 
 	private Note convertEntityToNote(Entity e) {
-		Note note = new Note(gV(e, ID), gV(e, TITLE), gV(e, TEXT));
+		Note note = new Note(gV(e, ID), gV(e, TITLE), gV(e, TEXT), e.getBoolean(ENCRYPTED));
 		return note;
 	}
 
 	private String gV(Entity entity, String field) {
 		return entity.getString(field);
 	}
+
 }
