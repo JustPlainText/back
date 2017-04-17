@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.mosst.jpt.data.Note;
 import de.mosst.jpt.data.NoteDao;
+import de.mosst.jpt.data.NoteNotFoundException;
 
 @Controller
 @RequestMapping("/api/notes")
@@ -21,7 +22,7 @@ public class NoteController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public Note getNote(@PathVariable("id") String id) {
+	public Note getNote(@PathVariable("id") String id) throws NoteNotFoundException {
 		System.out.println("get: " + id);
 		return noteDao.get(id);
 	}

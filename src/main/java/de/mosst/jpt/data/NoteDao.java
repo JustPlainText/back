@@ -1,34 +1,51 @@
 package de.mosst.jpt.data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Component;
+
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.FullEntity;
+import com.google.cloud.datastore.Key;
+import com.google.cloud.datastore.KeyFactory;
 
 @Component
 public class NoteDao {
 
-	private Map<String, Note> notes = new HashMap<>();
+	private static final String TEXT = "text";
+	private static final String TITLE = "title";
+	private static final String ID = "id";
 
-	public Note get(String id) {
-		Note note = notes.get(id);
-		if (note == null) {
-			String title = "Created note";
-			note = new Note(title, id, "0");
-			notes.put(id, note);
+	public Note get(String id) throws NoteNotFoundException {
+		Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
+		KeyFactory keyFactory = datastore.newKeyFactory().setKind("note");
+		Key key = keyFactory.newKey(id);
+		Entity e = datastore.get(key);
+		if (e == null) {
+			throw new NoteNotFoundException(id);
 		}
-		try {
-			int count = Integer.parseInt(note.getText());
-			note.setText("" + ++count);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return note;
+
+		return convertEntityToNote(e);
 	}
 
 	public Note save(Note note) {
-		notes.put(note.getId(), note);
-		return get(note.getId());
+
+		Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
+		KeyFactory keyFactory = datastore.newKeyFactory().setKind("note");
+		Key key = keyFactory.newKey(note.getId());
+
+		FullEntity<Key> noteEntity = Entity.newBuilder(key).set(ID, note.getId()).set(TITLE, note.getTitle()).set(TEXT, note.getText()).build();
+
+		Entity entity = datastore.put(noteEntity);
+		return convertEntityToNote(entity);
 	}
 
+	private Note convertEntityToNote(Entity e) {
+		Note note = new Note(gV(e, ID), gV(e, TITLE), gV(e, TEXT));
+		return note;
+	}
+
+	private String gV(Entity entity, String field) {
+		return entity.getString(field);
+	}
 }
