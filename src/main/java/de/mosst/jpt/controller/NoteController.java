@@ -38,6 +38,10 @@ public class NoteController {
 	@ResponseBody
 	public Note updateNote(@PathVariable("id") String id, @RequestBody Note note) {
 		System.out.println("update: " + note);
+		if (note.getId() == null) {
+			note.setId(id);
+			System.out.println("update: " + note);
+		}
 		return noteDao.save(note);
 	}
 
