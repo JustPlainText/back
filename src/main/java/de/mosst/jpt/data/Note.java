@@ -7,8 +7,8 @@ import lombok.Data;
 @lombok.NoArgsConstructor
 public class Note {
 
-	private String title;
 	private String id;
+	private String title;
 	private String text;
 
 }

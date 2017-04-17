@@ -30,8 +30,21 @@ dependencies {
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compile('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	
 
 	compile group: 'javax.inject', name: 'javax.inject', version: '1'
+	
+	compile group: 'com.google.cloud', name: 'google-cloud-datastore', version: '0.12.0-beta'
+
+	
+	testCompile group: 'com.google.appengine', name: 'appengine-api-1.0-sdk', version: '1.9.51'
+	testCompile group: 'com.google.appengine', name: 'appengine-testing', version: '1.9.51'
+	testCompile group: 'com.google.appengine', name: 'appengine-api-stubs', version: '1.9.51'
+	testCompile group: 'com.google.appengine', name: 'appengine-api-labs', version: '1.9.51'
+	testCompile group: 'com.google.appengine', name: 'appengine-tools-sdk', version: '1.9.51'
+
+
+	//compile 'com.google.appengine:appengine:+'
 }
 
 task buildDocker(type: Docker, dependsOn: build) {
@@ -48,3 +61,7 @@ task buildDocker(type: Docker, dependsOn: build) {
   }
   
 }
+
+
+
+
