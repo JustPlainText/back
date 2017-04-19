@@ -31,7 +31,7 @@ public class NoteDaoForGDataStoreTest {
 	@Test
 	public void testGet() throws NoteNotFoundException {
 		NoteDaoForGDataStore dao = new NoteDaoForGDataStore();
-		Note note = new Note(UUID, "test-get", "text-get");
+		Note note = new Note(UUID, "test-get", "text-get", false);
 		dao.save(note);
 		Note newNote = dao.get(UUID);
 		System.out.println(newNote);
