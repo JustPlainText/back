@@ -1,6 +1,9 @@
 package de.mosst.jpt.data;
 
+import org.apache.log4j.Logger;
+
 import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.FullEntity;
@@ -8,6 +11,8 @@ import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
 
 public class NoteDaoForGDataStore implements NoteDao {
+
+	Logger LOG = Logger.getLogger(NoteDaoForGDataStore.class);
 
 	private static final String TEXT = "text";
 	private static final String TITLE = "title";
@@ -42,7 +47,13 @@ public class NoteDaoForGDataStore implements NoteDao {
 	}
 
 	private Note convertEntityToNote(Entity e) {
-		Note note = new Note(gV(e, ID), gV(e, TITLE), gV(e, TEXT), e.getBoolean(ENCRYPTED));
+		boolean encrypted = false;
+		try {
+			encrypted = e.getBoolean(ENCRYPTED);
+		} catch (DatastoreException ex) {
+			LOG.info("Note hat keine Property 'encryption' ~ v1");
+		}
+		Note note = new Note(gV(e, ID), gV(e, TITLE), gV(e, TEXT), encrypted);
 		return note;
 	}
 
