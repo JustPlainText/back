@@ -2,6 +2,7 @@ package de.mosst.jpt.data;
 
 import org.apache.log4j.Logger;
 
+import com.google.cloud.datastore.Blob;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.DatastoreOptions;
@@ -39,8 +40,11 @@ public class NoteDaoForGDataStore implements NoteDao {
 		KeyFactory keyFactory = datastore.newKeyFactory().setKind("note");
 		Key key = keyFactory.newKey(note.getId());
 
-		FullEntity<Key> noteEntity = Entity.newBuilder(key).set(ID, note.getId()).set(TITLE, note.getTitle()).set(TEXT, note.getText())
-				.set(ENCRYPTED, note.isEncrypted()).build();
+		Blob blob = Blob.copyFrom(note.getText().getBytes());
+		// BlobValue text = BlobValue.of(blob);
+
+		FullEntity<Key> noteEntity = Entity.newBuilder(key).set(ID, note.getId()).set(TITLE, note.getTitle()).set(TEXT, blob).set(ENCRYPTED, note.isEncrypted())
+				.build();
 
 		Entity entity = datastore.put(noteEntity);
 		return convertEntityToNote(entity);
@@ -58,6 +62,7 @@ public class NoteDaoForGDataStore implements NoteDao {
 	}
 
 	private String gV(Entity entity, String field) {
+
 		return entity.getString(field);
 	}
 
