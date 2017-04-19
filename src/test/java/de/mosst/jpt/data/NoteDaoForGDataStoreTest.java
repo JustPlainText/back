@@ -2,6 +2,7 @@ package de.mosst.jpt.data;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -29,6 +30,7 @@ public class NoteDaoForGDataStoreTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGet() throws NoteNotFoundException {
 		NoteDaoForGDataStore dao = new NoteDaoForGDataStore();
 		Note note = new Note(UUID, "test-get", "text-get", false);
