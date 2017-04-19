@@ -34,7 +34,8 @@ public class NoteDaoForGDataStore implements NoteDao {
 		KeyFactory keyFactory = datastore.newKeyFactory().setKind("note");
 		Key key = keyFactory.newKey(note.getId());
 
-		FullEntity<Key> noteEntity = Entity.newBuilder(key).set(ID, note.getId()).set(TITLE, note.getTitle()).set(TEXT, note.getText()).build();
+		FullEntity<Key> noteEntity = Entity.newBuilder(key).set(ID, note.getId()).set(TITLE, note.getTitle()).set(TEXT, note.getText())
+				.set(ENCRYPTED, note.isEncrypted()).build();
 
 		Entity entity = datastore.put(noteEntity);
 		return convertEntityToNote(entity);
