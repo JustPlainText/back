@@ -3,6 +3,7 @@ package de.mosst.jpt.data;
 import org.apache.log4j.Logger;
 
 import com.google.cloud.datastore.Blob;
+import com.google.cloud.datastore.BlobValue;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.DatastoreOptions;
@@ -41,9 +42,9 @@ public class NoteDaoForGDataStore implements NoteDao {
 		Key key = keyFactory.newKey(note.getId());
 
 		Blob blob = Blob.copyFrom(note.getText().getBytes());
-		// BlobValue text = BlobValue.of(blob);
+		BlobValue text = BlobValue.newBuilder(blob).setExcludeFromIndexes(true).build();
 
-		FullEntity<Key> noteEntity = Entity.newBuilder(key).set(ID, note.getId()).set(TITLE, note.getTitle()).set(TEXT, blob).set(ENCRYPTED, note.isEncrypted())
+		FullEntity<Key> noteEntity = Entity.newBuilder(key).set(ID, note.getId()).set(TITLE, note.getTitle()).set(TEXT, text).set(ENCRYPTED, note.isEncrypted())
 				.build();
 
 		Entity entity = datastore.put(noteEntity);
@@ -57,12 +58,19 @@ public class NoteDaoForGDataStore implements NoteDao {
 		} catch (DatastoreException ex) {
 			LOG.info("Note hat keine Property 'encryption' ~ v1");
 		}
-		Note note = new Note(gV(e, ID), gV(e, TITLE), gV(e, TEXT), encrypted);
+		String text;
+		try {
+			text = new String(e.getBlob(TEXT).toByteArray());
+		} catch (ClassCastException ex) {
+			LOG.info("Text is not Blob");
+			text = gV(e, TEXT);
+		}
+
+		Note note = new Note(gV(e, ID), gV(e, TITLE), text, encrypted);
 		return note;
 	}
 
 	private String gV(Entity entity, String field) {
-
 		return entity.getString(field);
 	}
 
