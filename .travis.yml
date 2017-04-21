@@ -43,11 +43,13 @@ after_success:
 # gcloud login and set cluster & project data
 - gcloud auth activate-service-account --key-file secure/jpt-deployer-key.json
 - gcloud config set project jpt-21
-- gcloud config set compute/zone us-central1-b
+#- gcloud config set compute/zone us-central1-b
+- gcloud config set compute/zone us-central1-a
 # install kubectl
 - gcloud components install kubectl
 # set kubectl context & cluster
-- gcloud container clusters get-credentials jpt
+#- gcloud container clusters get-credentials jpt
+- gcloud container clusters get-credentials jpt-low-cost --zone=us-central1-a
 # update cluster mit dem neuen image
 - kubectl set image deployment/back back=jptttttt/back:$VERSION
 
